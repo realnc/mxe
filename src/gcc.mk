@@ -30,7 +30,7 @@ define $(PKG)_CONFIGURE
         --prefix='$(PREFIX)' \
         --libdir='$(PREFIX)/lib' \
         --with-sysroot='$(PREFIX)/$(TARGET)' \
-        --enable-languages='c,c++,objc,fortran' \
+        --enable-languages='c,c++' \
         --enable-version-specific-runtime-libs \
         --with-gcc \
         --with-gnu-ld \
