@@ -9,9 +9,7 @@ $(PKG)_CHECKSUM := 1947deb9d98aaf46bf47e6659b3e1444ce6616974470523756c082041d396
 $(PKG)_SUBDIR   := $(PKG)-everywhere-src-$($(PKG)_VERSION)
 $(PKG)_FILE     := $(PKG)-everywhere-opensource-src-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://download.qt.io/official_releases/qt/5.15/$($(PKG)_VERSION)/submodules/$($(PKG)_FILE)
-$(PKG)_DEPS     := cc dbus fontconfig freetds freetype harfbuzz jpeg libmysqlclient \
-                   libpng mesa openssl pcre2 postgresql sqlite zlib zstd $(BUILD)~zstd \
-                   $(if $(findstring shared,$(MXE_TARGETS)), icu4c)
+$(PKG)_DEPS     := cc fontconfig freetype harfbuzz jpeg libpng openssl pcre2 zlib zstd $(BUILD)~zstd
 $(PKG)_DEPS_$(BUILD) :=
 $(PKG)_TARGETS  := $(BUILD) $(MXE_TARGETS)
 
@@ -27,8 +25,6 @@ define $(PKG)_BUILD
     # ICU is buggy on static builds. See #653. TODO: reenable it some time in the future.
     cd '$(1)' && \
         OPENSSL_LIBS="`'$(TARGET)-pkg-config' --libs-only-l openssl`" \
-        PSQL_LIBS="-lpq -lpgport -lpgcommon -lsecur32 `'$(TARGET)-pkg-config' --libs-only-l openssl pthreads` -lws2_32" \
-        SYBASE_LIBS="-lsybdb `'$(TARGET)-pkg-config' --libs-only-l openssl` -liconv -lws2_32" \
         PKG_CONFIG="${TARGET}-pkg-config" \
         PKG_CONFIG_SYSROOT_DIR="/" \
         PKG_CONFIG_LIBDIR="$(PREFIX)/$(TARGET)/lib/pkgconfig" \
@@ -46,29 +42,33 @@ define $(PKG)_BUILD
             $(if $(BUILD_STATIC), -static,)$(if $(BUILD_SHARED), -shared,) \
             -prefix '$(PREFIX)/$(TARGET)/qt5' \
             $(if $(BUILD_STATIC), -no)-icu \
-            -opengl dynamic \
             -no-glib \
             -accessibility \
             -nomake examples \
             -nomake tests \
-            -plugin-sql-mysql \
-            -mysql_config $(PREFIX)/$(TARGET)/bin/mysql_config \
-            -plugin-sql-sqlite \
-            -plugin-sql-odbc \
-            -plugin-sql-psql \
-            -plugin-sql-tds -D Q_USE_SYBASE \
             -system-zlib \
             -system-libpng \
             -system-libjpeg \
-            -system-sqlite \
             -fontconfig \
             -system-freetype \
             -system-harfbuzz \
             -system-pcre \
             -openssl-linked \
-            -dbus-linked \
             -no-pch \
             -v \
+            -gc-binaries \
+            -c++std c++17 \
+            -no-dbus \
+            -no-opengl \
+            -no-sql-db2 \
+            -no-sql-ibase \
+            -no-sql-mysql \
+            -no-sql-oci \
+            -no-sql-odbc \
+            -no-sql-psql \
+            -no-sql-sqlite2 \
+            -no-sql-sqlite \
+            -no-sql-tds \
             $(PKG_CONFIGURE_OPTS)
 
     $(MAKE) -C '$(1)' -j '$(JOBS)'
@@ -90,7 +90,7 @@ define $(PKG)_BUILD
         '$(TOP_DIR)/src/qt-test.hpp'
     '$(PREFIX)/$(TARGET)/qt5/bin/rcc' -name qt-test -o '$(1)/test-$(PKG)-pkgconfig/qrc_qt-test.cpp' '$(TOP_DIR)/src/qt-test.qrc'
     '$(TARGET)-g++' \
-        -W -Wall -std=c++0x -pedantic \
+        -W -Wall -std=c++17 -pedantic \
         '$(TOP_DIR)/src/qt-test.cpp' \
         '$(1)/test-$(PKG)-pkgconfig/moc_qt-test.cpp' \
         '$(1)/test-$(PKG)-pkgconfig/qrc_qt-test.cpp' \
