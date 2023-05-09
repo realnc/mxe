@@ -9,17 +9,17 @@ PKG             := cloog
 $(PKG)_TARGETS  := $(MXE_TARGETS)
 
 PKG             := isl
-$(PKG)_VERSION  := 0.16.1
-$(PKG)_CHECKSUM := 412538bb65c799ac98e17e8cfcdacbb257a57362acfaaff254b0fcae970126d2
+$(PKG)_VERSION  := 0.26
+$(PKG)_CHECKSUM := a0b5cb06d24f9fa9e77b55fabbe9a3c94a336190345c2555f9915bb38e976504
 $(PKG)_SUBDIR   := $(PKG)-$($(PKG)_VERSION)
-$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.bz2
+$(PKG)_FILE     := $(PKG)-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://libisl.sourceforge.io/$($(PKG)_FILE)
 $(PKG)_URL_2    := https://gcc.gnu.org/pub/gcc/infrastructure/$($(PKG)_FILE)
 
 PKG             := gcc
-$(PKG)_VERSION  := 12.2.0
+$(PKG)_VERSION  := 12.3.0
 $(PKG)_RELEASE  := $($(PKG)_VERSION)
-$(PKG)_CHECKSUM := e549cf9cf3594a00e27b6589d4322d70e0720cdd213f39beb4181e06926230ff
+$(PKG)_CHECKSUM := 949a5d4f99e786421a93b532b22ffab5578de7321369975b91aec97adfda8c3b
 $(PKG)_SUBDIR   := gcc-$($(PKG)_VERSION)
 $(PKG)_FILE     := gcc-$($(PKG)_VERSION).tar.xz
 $(PKG)_URL      := https://ftp.gnu.org/gnu/gcc/gcc-$($(PKG)_VERSION)/$($(PKG)_FILE)
